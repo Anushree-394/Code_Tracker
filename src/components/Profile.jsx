@@ -11,7 +11,7 @@ export default function Profile({ onBack }) {
   const [progress, setProgress] = useState(0)
   const [profileDropdown, setProfileDropdown] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
-  
+
   // Profile form state
   const [formData, setFormData] = useState({
     fullName: '',
@@ -26,11 +26,16 @@ export default function Profile({ onBack }) {
     leetcode: '',
     codechef: '',
     hackerrank: '',
+    geeksforgeeks: '',
+    atcoder: '',
+    profileImage: '',
   })
+  const [selectedImage, setSelectedImage] = useState(null)
+  const [imagePreview, setImagePreview] = useState('')
 
   // Calculate profile completion
   useEffect(() => {
-    const filledFields = Object.values(formData).filter(field => field.trim() !== '').length
+    const filledFields = Object.values(formData).filter(field => typeof field === 'string' && field.trim() !== '').length
     const totalFields = Object.keys(formData).length
     setProgress(Math.round((filledFields / totalFields) * 100))
   }, [formData])
@@ -61,20 +66,113 @@ export default function Profile({ onBack }) {
     })
   }
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      // Check file size (limit to 1MB for base64)
+      if (file.size > 1024 * 1024) {
+        setMessage('Image size should be less than 1MB')
+        setTimeout(() => setMessage(''), 3000)
+        return
+      }
+
+      setSelectedImage(file)
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        const result = reader.result
+        console.log('Image converted to base64, length:', result.length)
+        setImagePreview(result)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  // Fetch profile data when user is authenticated
+  useEffect(() => {
+    if (user?.uid) {
+      const fetchProfile = async () => {
+        try {
+          const res = await fetch(`http://localhost:5000/api/profile/${user.uid}`)
+          if (res.ok) {
+            const data = await res.json()
+            if (data) {
+              // Merge existing formData with fetched data, excluding specific fields if needed
+              setFormData(prev => ({
+                ...prev,
+                fullName: data.fullName || '',
+                username: data.username || '',
+                bio: data.bio || '',
+                college: data.college || '',
+                graduationYear: data.graduationYear || '',
+                skills: data.skills || '',
+                github: data.github || '',
+                linkedin: data.linkedin || '',
+                codeforces: data.codeforces || '',
+                leetcode: data.leetcode || '',
+                codechef: data.codechef || '',
+                hackerrank: data.hackerrank || '',
+                geeksforgeeks: data.geeksforgeeks || '',
+                atcoder: data.atcoder || '',
+                profileImage: data.profileImage || '',
+              }))
+              setImagePreview(data.profileImage || '')
+            }
+          }
+        } catch (error) {
+          console.error("Error fetching profile:", error)
+        }
+      }
+      fetchProfile()
+    }
+  }, [user])
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setSaving(true)
     setMessage('')
-    
+
     try {
-      // Here you would save to Firebase Firestore or your backend
-      console.log('Profile data:', formData)
+      if (!user) {
+        throw new Error("User not authenticated")
+      }
+
+      // For now, just save the profile without image upload
+      const response = await fetch('http://localhost:5000/api/profile', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          profileImage: imagePreview || '', // Use preview as image URL for now
+          firebaseUid: user.uid,
+          email: user.email,
+        }),
+      })
+
+      console.log('Sent profile data:', {
+        ...formData,
+        profileImage: imagePreview || '',
+        firebaseUid: user.uid,
+        email: user.email,
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text()
+        console.error('Response error:', errorText)
+        throw new Error(`Failed to save profile: ${errorText}`)
+      }
+
+      const data = await response.json()
+      console.log('Profile explicitly saved:', data)
       setMessage('Profile saved successfully!')
-      
+      setSelectedImage(null)
+
       // Clear message after 3 seconds
       setTimeout(() => setMessage(''), 3000)
     } catch (error) {
-      setMessage('Error saving profile. Please try again.')
+      console.error('Save error:', error)
+      setMessage(`Error saving profile: ${error.message}`)
     } finally {
       setSaving(false)
     }
@@ -104,7 +202,7 @@ export default function Profile({ onBack }) {
           </div>
           <h1 className="text-2xl font-semibold text-white mb-4">Please Sign In</h1>
           <p className="text-slate-300 mb-6">You need to be signed in to view your profile</p>
-          <button 
+          <button
             onClick={onBack}
             className="rounded-xl bg-gradient-to-r from-fuchsia-500 to-cyan-400 px-6 py-3 text-sm font-semibold text-slate-950 hover:opacity-95 transition-opacity"
           >
@@ -164,7 +262,7 @@ export default function Profile({ onBack }) {
                           <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                         </svg>
                       </button>
-                      
+
                       {profileDropdown && (
                         <div className="absolute right-0 top-full mt-2 w-48 rounded-xl border border-white/10 bg-white/5 p-2 shadow-lg">
                           <button
@@ -299,11 +397,10 @@ export default function Profile({ onBack }) {
         {/* Main Content */}
         <main className="mx-auto max-w-6xl px-4 py-8">
           {message && (
-            <div className={`mb-6 rounded-xl border px-4 py-3 text-sm animate-fade-in ${
-              message.includes('success') 
-                ? 'border-green-400/30 bg-green-400/10 text-green-200'
-                : 'border-red-400/30 bg-red-400/10 text-red-200'
-            }`}>
+            <div className={`mb-6 rounded-xl border px-4 py-3 text-sm animate-fade-in ${message.includes('success')
+              ? 'border-green-400/30 bg-green-400/10 text-green-200'
+              : 'border-red-400/30 bg-red-400/10 text-red-200'
+              }`}>
               {message}
             </div>
           )}
@@ -313,10 +410,18 @@ export default function Profile({ onBack }) {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <div className="h-16 w-16 rounded-full bg-gradient-to-br from-fuchsia-500 to-cyan-400 p-0.5">
-                  <div className="flex h-full w-full items-center justify-center rounded-full bg-slate-950">
-                    <span className="text-2xl font-bold text-white">
-                      {user.displayName?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase()}
-                    </span>
+                  <div className="flex h-full w-full items-center justify-center rounded-full bg-slate-950 overflow-hidden">
+                    {imagePreview ? (
+                      <img
+                        src={imagePreview}
+                        alt="Profile"
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-2xl font-bold text-white">
+                        {user.displayName?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase()}
+                      </span>
+                    )}
                   </div>
                 </div>
                 <div>
@@ -329,14 +434,14 @@ export default function Profile({ onBack }) {
                   <p className="text-xs text-slate-500">Member since {new Date().toLocaleDateString()}</p>
                 </div>
               </div>
-              
+
               <div className="flex items-center gap-2">
                 <div className="text-right">
                   <div className="text-xs text-slate-400">Profile Completion</div>
                   <div className="text-sm font-semibold text-cyan-400">{progress}%</div>
                 </div>
                 <div className="h-8 w-8 rounded-full border-2 border-cyan-400/20">
-                  <div 
+                  <div
                     className="h-full w-full rounded-full bg-gradient-to-r from-fuchsia-500 to-cyan-400 transition-all duration-500"
                     style={{
                       background: `conic-gradient(from 0deg, rgb(248 113 113) 0deg, rgb(34 211 238) ${progress * 3.6}deg, rgb(51 65 85) ${progress * 3.6}deg)`
@@ -359,7 +464,68 @@ export default function Profile({ onBack }) {
                   <p className="text-sm text-slate-400">Tell us about yourself</p>
                 </div>
               </div>
-              
+
+              {/* Profile Image Upload */}
+              <div className="mb-6">
+                <label className="mb-3 block text-sm font-medium text-slate-300">Profile Image</label>
+                <div className="flex items-center gap-6">
+                  <div className="relative">
+                    <div className="h-24 w-24 rounded-full border-2 border-white/10 bg-white/5 overflow-hidden">
+                      {imagePreview ? (
+                        <img
+                          src={imagePreview}
+                          alt="Profile preview"
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center">
+                          <svg className="h-8 w-8 text-slate-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                          </svg>
+                        </div>
+                      )}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => document.getElementById('profileImageInput').click()}
+                      className="absolute -bottom-2 -right-2 h-8 w-8 rounded-full bg-gradient-to-r from-fuchsia-500 to-cyan-400 p-0.5 hover:opacity-90 transition-opacity"
+                    >
+                      <div className="flex h-full w-full items-center justify-center rounded-full bg-slate-950">
+                        <svg className="h-4 w-4 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                        </svg>
+                      </div>
+                    </button>
+                  </div>
+                  <div className="flex-1">
+                    <input
+                      id="profileImageInput"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      className="hidden"
+                    />
+                    <p className="text-sm text-slate-300 mb-2">Upload your profile picture</p>
+                    <p className="text-xs text-slate-400">Recommended: Square image, at least 200x200px. Max size: 1MB.</p>
+                    {selectedImage && (
+                      <div className="mt-2 flex items-center gap-2">
+                        <span className="text-xs text-cyan-300">Selected: {selectedImage.name}</span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSelectedImage(null)
+                            setImagePreview(formData.profileImage || '')
+                          }}
+                          className="text-xs text-red-400 hover:text-red-300"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="group">
                   <label className="mb-2 block text-sm font-medium text-slate-300">Full Name</label>
@@ -379,7 +545,7 @@ export default function Profile({ onBack }) {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="group">
                   <label className="mb-2 block text-sm font-medium text-slate-300">Username</label>
                   <div className="relative">
@@ -396,7 +562,7 @@ export default function Profile({ onBack }) {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="md:col-span-2">
                   <label className="mb-2 block text-sm font-medium text-slate-300">Bio</label>
                   <textarea
@@ -422,7 +588,7 @@ export default function Profile({ onBack }) {
                   <p className="text-sm text-slate-400">Your academic background</p>
                 </div>
               </div>
-              
+
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="group">
                   <label className="mb-2 block text-sm font-medium text-slate-300">College/University</label>
@@ -440,7 +606,7 @@ export default function Profile({ onBack }) {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="group">
                   <label className="mb-2 block text-sm font-medium text-slate-300">Graduation Year</label>
                   <div className="relative">
@@ -471,7 +637,7 @@ export default function Profile({ onBack }) {
                   <p className="text-sm text-slate-400">Your technical expertise</p>
                 </div>
               </div>
-              
+
               <div className="group">
                 <label className="mb-2 block text-sm font-medium text-slate-300">Technical Skills</label>
                 <div className="relative">
@@ -502,7 +668,7 @@ export default function Profile({ onBack }) {
                   <p className="text-sm text-slate-400">Connect your coding platforms</p>
                 </div>
               </div>
-              
+
               <div className="grid gap-4 md:grid-cols-2">
                 {[
                   { name: 'github', icon: '🐙', placeholder: 'https://github.com/username', prefix: 'https://github.com/' },
@@ -511,6 +677,8 @@ export default function Profile({ onBack }) {
                   { name: 'leetcode', icon: '🧮', placeholder: 'https://leetcode.com/username', prefix: 'https://leetcode.com/' },
                   { name: 'codechef', icon: '👨‍🍳', placeholder: 'https://codechef.com/users/username', prefix: 'https://codechef.com/users/' },
                   { name: 'hackerrank', icon: '🥇', placeholder: 'https://hackerrank.com/profile/username', prefix: 'https://hackerrank.com/profile/' },
+                  { name: 'geeksforgeeks', icon: '📚', placeholder: 'https://geeksforgeeks.org/user/username', prefix: 'https://geeksforgeeks.org/user/' },
+                  { name: 'atcoder', icon: '🎯', placeholder: 'https://atcoder.jp/users/username', prefix: 'https://atcoder.jp/users/' },
                 ].map((platform) => (
                   <div key={platform.name} className="group">
                     <label className="mb-2 block text-sm font-medium text-slate-300 capitalize">
