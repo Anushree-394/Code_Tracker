@@ -1,0 +1,200 @@
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import {
+    LayoutDashboard,
+    Trophy,
+    BrainCircuit,
+    BarChart3,
+    Target,
+    Bell,
+    Settings,
+    LogOut,
+    ChevronRight
+} from 'lucide-react';
+
+const ProfileCard = ({ user }) => (
+    <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-6">
+        <div className="flex items-center gap-3 mb-3">
+            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-fuchsia-500 to-cyan-400 p-0.5">
+                <div className="w-full h-full rounded-full bg-slate-900 flex items-center justify-center overflow-hidden">
+                    <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+                </div>
+            </div>
+            <div>
+                <h3 className="font-semibold text-white text-sm">{user.name}</h3>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-fuchsia-500/20 text-fuchsia-300 border border-fuchsia-500/30">
+                    {user.level}
+                </span>
+            </div>
+        </div>
+        <div className="flex justify-between items-center text-xs">
+            <span className="text-slate-400">Total Solved</span>
+            <span className="text-white font-medium">{user.totalSolved}</span>
+        </div>
+    </div>
+);
+
+const PlatformCard = ({ platform }) => (
+    <div className="bg-white/5 border border-white/10 rounded-xl p-3 mb-3 hover:bg-white/10 transition-colors cursor-pointer group">
+        <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-md bg-slate-800 flex items-center justify-center overflow-hidden">
+                    <img src={platform.logo} alt={platform.name} className="w-4 h-4" />
+                </div>
+                <span className="text-xs font-medium text-white">{platform.name}</span>
+            </div>
+            <span className={`text-[10px] px-1.5 py-0.5 rounded-md ${platform.status === 'Linked'
+                ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                : 'bg-slate-500/20 text-slate-400 border border-slate-500/30'
+                }`}>
+                {platform.status}
+            </span>
+        </div>
+        <div className="text-[10px] text-slate-400 mb-1">@{platform.handle}</div>
+        <div className="flex justify-between items-center">
+            <div className="text-[10px]">
+                <span className="text-slate-500">Solved: </span>
+                <span className="text-slate-200">{platform.solvedCount}</span>
+            </div>
+            <div className="text-[10px]">
+                <span className="text-slate-500">Rating: </span>
+                <span className="text-cyan-400">{platform.rating}</span>
+            </div>
+        </div>
+    </div>
+);
+
+const NavItem = ({ icon: Icon, label, to, active = false, children }) => {
+    const [isOpen, setIsOpen] = React.useState(false);
+    const hasChildren = React.Children.count(children) > 0;
+
+    const content = (
+        <button
+            onClick={() => hasChildren ? setIsOpen(!isOpen) : null}
+            className={`w-full flex items-center justify-between px-3 py-2 rounded-xl transition-all ${active
+                ? 'bg-gradient-to-r from-fuchsia-500/20 to-cyan-400/20 border border-white/10 text-white'
+                : 'text-slate-400 hover:text-white hover:bg-white/5'
+                }`}
+        >
+            <div className="flex items-center gap-3">
+                <Icon size={18} />
+                <span className="text-sm font-medium">{label}</span>
+            </div>
+            {hasChildren ? (
+                <ChevronRight size={14} className={`transition-transform duration-200 ${isOpen ? 'rotate-90' : ''}`} />
+            ) : (
+                active && <ChevronRight size={14} className="text-cyan-400" />
+            )}
+        </button>
+    );
+
+    return (
+        <div className="mb-1">
+            {!hasChildren && to ? (
+                <Link to={to}>{content}</Link>
+            ) : content}
+            {isOpen && hasChildren && (
+                <div className="ml-6 mt-1 space-y-1 border-l border-white/5 pl-3">
+                    {children}
+                </div>
+            )}
+        </div>
+    );
+};
+
+const SubNavItem = ({ label, to }) => (
+    <Link to={to} className="block w-full text-left px-3 py-1.5 text-xs text-slate-400 hover:text-cyan-400 transition-colors rounded-lg hover:bg-white/5">
+        {label}
+    </Link>
+);
+
+const Sidebar = () => {
+    const navigate = useNavigate();
+    const user = {
+        name: "Aryan Sharma",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Aryan",
+        level: "Intermediate",
+        totalSolved: 842
+    };
+
+    const platforms = [
+        {
+            name: "Codeforces",
+            logo: "https://cdn.iconscout.com/icon/free/png-256/free-code-forces-3628695-3029920.png",
+            handle: "aryan_07",
+            solvedCount: 342,
+            rating: "1452 (Specialist)",
+            status: "Linked"
+        },
+        {
+            name: "LeetCode",
+            logo: "https://upload.wikimedia.org/wikipedia/commons/1/19/LeetCode_logo_black.png",
+            handle: "aryansharma",
+            solvedCount: 420,
+            rating: "1920 (Knight)",
+            status: "Linked"
+        },
+        {
+            name: "CodeChef",
+            logo: "https://cdn.iconscout.com/icon/free/png-256/free-codechef-3628701-3029926.png",
+            handle: "aryan_chef",
+            solvedCount: 80,
+            rating: "3★ (1642)",
+            status: "Linked"
+        }
+    ];
+
+    return (
+        <aside className="h-full w-full bg-slate-950 border-r border-white/5 p-6 overflow-y-auto custom-scrollbar flex flex-col">
+            <Link to="/" className="flex items-center gap-3 mb-8 hover:opacity-80 transition-opacity flex-shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-fuchsia-500 to-cyan-400 flex items-center justify-center">
+                    <BrainCircuit className="text-slate-950" size={24} />
+                </div>
+                <h1 className="text-xl font-bold bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
+                    TrackCode AI
+                </h1>
+            </Link>
+
+            <div className="flex-shrink-0">
+                <ProfileCard user={user} />
+            </div>
+
+            <div className="mb-6 flex-shrink-0">
+                <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-4 px-2">
+                    Your Platforms
+                </h4>
+                <div className="space-y-3">
+                    {platforms.map(p => <PlatformCard key={p.name} platform={p} />)}
+                </div>
+            </div>
+
+            <div className="mb-6 flex-shrink-0">
+                <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-4 px-2">
+                    Menu
+                </h4>
+                <nav>
+                    <NavItem icon={LayoutDashboard} label="Dashboard" to="/dashboard" active />
+                    <NavItem icon={Trophy} label="Contests">
+                        <SubNavItem label="Codeforces" to="/dashboard/codeforces" />
+                        <SubNavItem label="LeetCode" to="/dashboard/leetcode" />
+                        <SubNavItem label="CodeChef" to="/dashboard/codechef" />
+                        <SubNavItem label="AtCoder" to="/dashboard/atcoder" />
+                        <SubNavItem label="HackerRank" to="/dashboard/hackerrank" />
+                        <SubNavItem label="GeeksforGeeks" to="/dashboard/geeksforgeeks" />
+                    </NavItem>
+                    <NavItem icon={BrainCircuit} label="AI Insights" to="/dashboard/insights" />
+                    <NavItem icon={BarChart3} label="Analytics" to="/dashboard/analytics" />
+                    <NavItem icon={Target} label="Skill Gaps" to="/dashboard/skills" />
+                    <NavItem icon={Bell} label="Notifications" to="/dashboard/notifications" />
+                </nav>
+            </div>
+
+            <div className="mt-auto pt-6 border-t border-white/5 flex-shrink-0">
+                <NavItem icon={Settings} label="Settings" />
+                <NavItem icon={LogOut} label="Logout" />
+            </div>
+        </aside>
+    );
+};
+
+export default Sidebar;
