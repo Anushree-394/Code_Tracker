@@ -125,7 +125,7 @@ const CodeforcesContests = () => {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center lg:ml-72 p-6">
+            <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-6">
                 <Loader2 className="w-10 h-10 text-cyan-400 animate-spin mb-4" />
                 <p className="text-slate-400 animate-pulse">Fetching Codeforces contests...</p>
             </div>
@@ -134,7 +134,7 @@ const CodeforcesContests = () => {
 
     if (error) {
         return (
-            <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center lg:ml-72 p-6 text-center">
+            <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-6 text-center">
                 <div className="w-16 h-16 rounded-full bg-rose-500/10 flex items-center justify-center text-rose-500 mb-6">
                     <AlertCircle size={32} />
                 </div>
@@ -151,7 +151,7 @@ const CodeforcesContests = () => {
     }
 
     return (
-        <div className="min-h-screen bg-slate-950 text-slate-100 p-6 lg:ml-72">
+        <div className="min-h-screen bg-slate-950 text-slate-100 p-6">
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
                 <div>

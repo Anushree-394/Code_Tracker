@@ -33,7 +33,7 @@ const DashboardLayout = () => {
             )}
 
             {/* Main Content */}
-            <div className="flex-1 w-full">
+            <div className="flex-1 w-full lg:ml-72">
                 <Outlet />
             </div>
         </div>

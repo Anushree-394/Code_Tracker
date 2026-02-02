@@ -9,7 +9,9 @@ import {
     Bell,
     Settings,
     LogOut,
-    ChevronRight
+    ChevronRight,
+    BookOpen,
+    User
 } from 'lucide-react';
 
 const ProfileCard = ({ user }) => (
@@ -174,6 +176,14 @@ const Sidebar = () => {
                 </h4>
                 <nav>
                     <NavItem icon={LayoutDashboard} label="Dashboard" to="/dashboard" active />
+                    <NavItem icon={User} label="Profiles">
+                        <SubNavItem label="Codeforces" to="/dashboard/codeforces-profile" />
+                        <SubNavItem label="LeetCode" to="/dashboard/leetcode-profile" />
+                        <SubNavItem label="CodeChef" to="/dashboard/profile/codechef" />
+                        <SubNavItem label="AtCoder" to="/dashboard/profile/atcoder" />
+                        <SubNavItem label="HackerRank" to="/dashboard/profile/hackerrank" />
+                        <SubNavItem label="GeeksforGeeks" to="/dashboard/profile/geeksforgeeks" />
+                    </NavItem>
                     <NavItem icon={Trophy} label="Contests">
                         <SubNavItem label="Codeforces" to="/dashboard/codeforces" />
                         <SubNavItem label="LeetCode" to="/dashboard/leetcode" />
@@ -181,6 +191,11 @@ const Sidebar = () => {
                         <SubNavItem label="AtCoder" to="/dashboard/atcoder" />
                         <SubNavItem label="HackerRank" to="/dashboard/hackerrank" />
                         <SubNavItem label="GeeksforGeeks" to="/dashboard/geeksforgeeks" />
+                    </NavItem>
+                    <NavItem icon={BookOpen} label="Resources">
+                        <SubNavItem label="DSA" to="/dashboard/resources/dsa" />
+                        <SubNavItem label="Interview" to="/dashboard/resources/interview" />
+                        <SubNavItem label="Aptitude" to="/dashboard/resources/aptitude" />
                     </NavItem>
                     <NavItem icon={BrainCircuit} label="AI Insights" to="/dashboard/insights" />
                     <NavItem icon={BarChart3} label="Analytics" to="/dashboard/analytics" />

@@ -6,6 +6,10 @@ import Profile from './components/Profile'
 import DashboardLayout from './components/dashboard/DashboardLayout'
 import Dashboard from './components/dashboard/Dashboard'
 import CodeforcesContests from './components/dashboard/CodeforcesContests'
+import CodeforcesProfile from './components/dashboard/CodeforcesProfile'
+
+import LeetCodeProfile from './components/dashboard/LeetCodeProfile'
+import Resources from './components/dashboard/Resources'
 
 function App() {
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -301,6 +305,11 @@ function App() {
         <Route path="/dashboard" element={<DashboardLayout />}>
           <Route index element={<Dashboard />} />
           <Route path="codeforces" element={<CodeforcesContests />} />
+          <Route path="codeforces-profile" element={<CodeforcesProfile />} />
+          <Route path="leetcode-profile" element={<LeetCodeProfile />} />
+          <Route path="resources/dsa" element={<Resources category="DSA" />} />
+          <Route path="resources/interview" element={<Resources category="Interview" />} />
+          <Route path="resources/aptitude" element={<Resources category="Aptitude" />} />
         </Route>
       </Routes>
     </Router>

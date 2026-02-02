@@ -49,27 +49,37 @@ const StatCard = ({ title, value, icon: Icon, trend, color }) => {
 };
 
 const AIRecommendation = () => (
-    <div className="col-span-1 lg:col-span-2 bg-gradient-to-br from-fuchsia-600/20 to-cyan-500/20 border border-fuchsia-500/30 rounded-3xl p-6 relative overflow-hidden group">
-        <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
-            <Sparkles size={120} className="text-fuchsia-400" />
-        </div>
-        <div className="relative z-10">
-            <div className="flex items-center gap-2 mb-4">
-                <div className="p-2 rounded-lg bg-fuchsia-500/20 text-fuchsia-300">
-                    <BrainCircuit size={20} />
-                </div>
-                <h3 className="text-lg font-semibold text-white">AI Personal Insights</h3>
+    <div className="col-span-1 lg:col-span-2 relative overflow-hidden rounded-3xl p-0.5 bg-gradient-to-br from-fuchsia-500/30 via-purple-500/20 to-cyan-500/30 group">
+        <div className="absolute inset-0 bg-gradient-to-br from-fuchsia-600/10 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="relative h-full bg-slate-900/90 backdrop-blur-xl rounded-[23px] p-6 sm:p-8">
+            <div className="absolute top-0 right-0 p-8 opacity-20 group-hover:opacity-30 transition-opacity duration-500">
+                <Sparkles size={120} className="text-fuchsia-400 blur-sm" />
             </div>
-            <p className="text-slate-200 text-sm leading-relaxed max-w-2xl mb-4">
-                “AI Insight: Based on your last 10 Codeforces contests, you perform <span className="text-cyan-400 font-bold">15% better</span> in 2-hour contests compared to 3-hour ones. Focus on improving your speed in the first 45 minutes of the contest.”
-            </p>
-            <div className="flex gap-3">
-                <button className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-medium transition-colors">
-                    View Detail Analysis
-                </button>
-                <button className="px-4 py-2 rounded-xl bg-fuchsia-500 text-slate-950 text-xs font-bold hover:bg-fuchsia-400 transition-colors">
-                    Optimize Strategy
-                </button>
+
+            <div className="relative z-10 flex flex-col h-full justify-between">
+                <div>
+                    <div className="flex items-center gap-3 mb-6">
+                        <div className="p-2.5 rounded-xl bg-gradient-to-br from-fuchsia-500/20 to-purple-500/20 text-fuchsia-300 ring-1 ring-fuchsia-500/30 shadow-[0_0_15px_-3px_rgba(217,70,239,0.3)]">
+                            <BrainCircuit size={24} />
+                        </div>
+                        <h3 className="text-xl font-bold bg-gradient-to-r from-white to-fuchsia-200 bg-clip-text text-transparent">
+                            AI Personal Insights
+                        </h3>
+                    </div>
+
+                    <p className="text-slate-300 text-base leading-relaxed max-w-2xl mb-8 font-light">
+                        “AI Insight: Based on your last 10 Codeforces contests, you perform <span className="text-cyan-400 font-semibold drop-shadow-[0_0_8px_rgba(34,211,238,0.5)]">15% better</span> in 2-hour contests compared to 3-hour ones. Focus on improving your speed in the first 45 minutes of the contest.”
+                    </p>
+                </div>
+
+                <div className="flex gap-4">
+                    <button className="px-5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-white text-sm font-medium transition-all hover:scale-105 border border-white/10">
+                        View Detailed Analysis
+                    </button>
+                    <button className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-fuchsia-600 to-fuchsia-500 text-white text-sm font-bold hover:shadow-[0_0_20px_-5px_rgba(217,70,239,0.5)] transition-all hover:scale-105 hover:-translate-y-0.5">
+                        Optimize Strategy
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -147,8 +157,10 @@ const Dashboard = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-slate-950 text-slate-100 p-6 lg:ml-72">
-            {/* Header */}
+        <div className="min-h-screen bg-slate-950 text-slate-100 p-6 relative overflow-hidden">
+            {/* Background decoration */}
+            <div className="pointer-events-none absolute top-0 right-0 -mr-40 h-96 w-96 rounded-full bg-cyan-500/10 blur-3xl opacity-50" />
+            <div className="pointer-events-none absolute bottom-0 left-0 -ml-40 h-96 w-96 rounded-full bg-fuchsia-500/10 blur-3xl opacity-50" />
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                 <div>
                     <h2 className="text-2xl font-bold text-white">Welcome back, Aryan!</h2>
