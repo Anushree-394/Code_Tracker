@@ -68,7 +68,7 @@ const AIRecommendation = () => (
                     </div>
 
                     <p className="text-slate-300 text-base leading-relaxed max-w-2xl mb-8 font-light">
-                        “AI Insight: Based on your last 10 Codeforces contests, you perform <span className="text-cyan-400 font-semibold drop-shadow-[0_0_8px_rgba(34,211,238,0.5)]">15% better</span> in 2-hour contests compared to 3-hour ones. Focus on improving your speed in the first 45 minutes of the contest.”
+                        “AI Insight: Connect your platforms to get personalized analysis of your coding performance and speed.”
                     </p>
                 </div>
 
@@ -138,22 +138,17 @@ const UpcomingContest = ({ name, platform, date, countdown }) => (
 
 const Dashboard = () => {
     const chartData = [
-        { name: 'Mon', solves: 4 },
-        { name: 'Tue', solves: 7 },
-        { name: 'Wed', solves: 5 },
-        { name: 'Thu', solves: 12 },
-        { name: 'Fri', solves: 8 },
-        { name: 'Sat', solves: 15 },
-        { name: 'Sun', solves: 10 },
+        { name: 'Mon', solves: 0 },
+        { name: 'Tue', solves: 0 },
+        { name: 'Wed', solves: 0 },
+        { name: 'Thu', solves: 0 },
+        { name: 'Fri', solves: 0 },
+        { name: 'Sat', solves: 0 },
+        { name: 'Sun', solves: 0 },
     ];
 
     const ratingData = [
-        { name: 'Jan', rating: 1200 },
-        { name: 'Feb', rating: 1250 },
-        { name: 'Mar', rating: 1320 },
-        { name: 'Apr', rating: 1300 },
-        { name: 'May', rating: 1450 },
-        { name: 'Jun', rating: 1452 },
+        { name: 'Init', rating: 0 },
     ];
 
     return (
@@ -163,27 +158,27 @@ const Dashboard = () => {
             <div className="pointer-events-none absolute bottom-0 left-0 -ml-40 h-96 w-96 rounded-full bg-fuchsia-500/10 blur-3xl opacity-50" />
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                 <div>
-                    <h2 className="text-2xl font-bold text-white">Welcome back, Aryan!</h2>
-                    <p className="text-slate-400 text-sm mt-1">Here's what's happening with your coding stats today.</p>
+                    <h2 className="text-2xl font-bold text-white">Welcome!</h2>
+                    <p className="text-slate-400 text-sm mt-1">Connect your accounts to see your coding progress.</p>
                 </div>
                 <div className="flex items-center gap-3">
                     <div className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-xs font-medium text-slate-300">
-                        <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
-                        Synced: 2 mins ago
+                        <div className="w-2 h-2 rounded-full bg-slate-500"></div>
+                        Not Synced
                     </div>
                     <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-fuchsia-500 to-cyan-400 text-slate-950 text-xs font-bold hover:opacity-90 transition-opacity">
                         <Sparkles size={14} />
-                        AI Global Rank: #1,242
+                        AI Global Rank: N/A
                     </button>
                 </div>
             </div>
 
             {/* Stats Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <StatCard title="Total Solved Problems" value="842" icon={Award} trend="+12" color="fuchsia" />
-                <StatCard title="Upcoming Contests" value="5" icon={Calendar} trend="Next: 4h" color="cyan" />
-                <StatCard title="Average Rating" value="1,671" icon={TrendingUp} trend="+42" color="indigo" />
-                <StatCard title="AI Confidence Score" value="86%" icon={Sparkles} trend="+2.4%" color="amber" />
+                <StatCard title="Total Solved Problems" value="0" icon={Award} trend="0" color="fuchsia" />
+                <StatCard title="Upcoming Contests" value="0" icon={Calendar} trend="N/A" color="cyan" />
+                <StatCard title="Average Rating" value="0" icon={TrendingUp} trend="0" color="indigo" />
+                <StatCard title="AI Confidence Score" value="0%" icon={Sparkles} trend="0%" color="amber" />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -222,10 +217,9 @@ const Dashboard = () => {
                     {/* Recent Activity */}
                     <div className="bg-white/5 border border-white/10 rounded-3xl p-6">
                         <h3 className="font-semibold text-white mb-6">Recent Solvings</h3>
-                        <ActivityItem title="Maximum Subarray Sum" platform="LeetCode" time="15m ago" difficulty="Medium" />
-                        <ActivityItem title="Standard Free Lunch" platform="Codeforces" time="2h ago" difficulty="Hard" />
-                        <ActivityItem title="Array Compression" platform="CodeChef" time="5h ago" difficulty="Easy" />
-                        <ActivityItem title="Reverse Nodes in k-Group" platform="LeetCode" time="1d ago" difficulty="Hard" />
+                        <div className="text-center py-10 text-slate-500 text-sm italic">
+                            No recent activity found. Start solving to see your progress!
+                        </div>
                     </div>
                 </div>
 
@@ -255,9 +249,9 @@ const Dashboard = () => {
                             <h3 className="font-semibold text-white">Upcoming Contests</h3>
                             <button className="text-[10px] font-bold text-cyan-400 hover:text-cyan-300">View All</button>
                         </div>
-                        <UpcomingContest name="Codeforces Round #924 (Div. 2)" platform="Codeforces" date="Feb 2, 2024 • 20:05" countdown="04:22:15" />
-                        <UpcomingContest name="Starters 121" platform="CodeChef" date="Feb 3, 2024 • 20:00" countdown="1d 04h" />
-                        <UpcomingContest name="Weekly Contest 384" platform="LeetCode" date="Feb 4, 2024 • 08:00" countdown="2d 16h" />
+                        <div className="text-center py-6 text-slate-500 text-xs italic">
+                            Connect platforms to see your contest schedule.
+                        </div>
                     </div>
 
                     {/* Pro Ad / Tip */}

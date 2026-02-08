@@ -113,36 +113,36 @@ const SubNavItem = ({ label, to }) => (
 const Sidebar = () => {
     const navigate = useNavigate();
     const user = {
-        name: "Aryan Sharma",
-        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Aryan",
-        level: "Intermediate",
-        totalSolved: 842
+        name: "User",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=User",
+        level: "Beginner",
+        totalSolved: 0
     };
 
     const platforms = [
         {
             name: "Codeforces",
             logo: "https://cdn.iconscout.com/icon/free/png-256/free-code-forces-3628695-3029920.png",
-            handle: "aryan_07",
-            solvedCount: 342,
-            rating: "1452 (Specialist)",
-            status: "Linked"
+            handle: "not_linked",
+            solvedCount: 0,
+            rating: "N/A",
+            status: "Not Linked"
         },
         {
             name: "LeetCode",
             logo: "https://upload.wikimedia.org/wikipedia/commons/1/19/LeetCode_logo_black.png",
-            handle: "aryansharma",
-            solvedCount: 420,
-            rating: "1920 (Knight)",
-            status: "Linked"
+            handle: "not_linked",
+            solvedCount: 0,
+            rating: "N/A",
+            status: "Not Linked"
         },
         {
             name: "CodeChef",
             logo: "https://cdn.iconscout.com/icon/free/png-256/free-codechef-3628701-3029926.png",
-            handle: "aryan_chef",
-            solvedCount: 80,
-            rating: "3★ (1642)",
-            status: "Linked"
+            handle: "not_linked",
+            solvedCount: 0,
+            rating: "N/A",
+            status: "Not Linked"
         }
     ];
 
@@ -163,15 +163,6 @@ const Sidebar = () => {
 
             <div className="mb-6 flex-shrink-0">
                 <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-4 px-2">
-                    Your Platforms
-                </h4>
-                <div className="space-y-3">
-                    {platforms.map(p => <PlatformCard key={p.name} platform={p} />)}
-                </div>
-            </div>
-
-            <div className="mb-6 flex-shrink-0">
-                <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-4 px-2">
                     Menu
                 </h4>
                 <nav>
@@ -180,7 +171,7 @@ const Sidebar = () => {
                         <SubNavItem label="Codeforces" to="/dashboard/codeforces-profile" />
                         <SubNavItem label="LeetCode" to="/dashboard/leetcode-profile" />
                         <SubNavItem label="CodeChef" to="/dashboard/profile/codechef" />
-                        <SubNavItem label="AtCoder" to="/dashboard/profile/atcoder" />
+                        <SubNavItem label="AtCoder" to="/dashboard/atcoder-profile" />
                         <SubNavItem label="HackerRank" to="/dashboard/profile/hackerrank" />
                         <SubNavItem label="GeeksforGeeks" to="/dashboard/profile/geeksforgeeks" />
                     </NavItem>
@@ -196,6 +187,7 @@ const Sidebar = () => {
                         <SubNavItem label="DSA" to="/dashboard/resources/dsa" />
                         <SubNavItem label="Interview" to="/dashboard/resources/interview" />
                         <SubNavItem label="Aptitude" to="/dashboard/resources/aptitude" />
+                        <SubNavItem label="Companies" to="/dashboard/resources/companies" />
                     </NavItem>
                     <NavItem icon={BrainCircuit} label="AI Insights" to="/dashboard/insights" />
                     <NavItem icon={BarChart3} label="Analytics" to="/dashboard/analytics" />

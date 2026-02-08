@@ -523,8 +523,8 @@ export default function CodeforcesProfile() {
                                                                     {contest.newRating}
                                                                 </span>
                                                                 <span className={`text-xs font-semibold px-1.5 py-0.5 rounded ${isExamplePositive
-                                                                        ? 'bg-green-500/20 text-green-400'
-                                                                        : 'bg-red-500/20 text-red-400'
+                                                                    ? 'bg-green-500/20 text-green-400'
+                                                                    : 'bg-red-500/20 text-red-400'
                                                                     }`}>
                                                                     {isExamplePositive ? '+' : ''}{ratingChange}
                                                                 </span>

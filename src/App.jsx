@@ -7,9 +7,17 @@ import DashboardLayout from './components/dashboard/DashboardLayout'
 import Dashboard from './components/dashboard/Dashboard'
 import CodeforcesContests from './components/dashboard/CodeforcesContests'
 import CodeforcesProfile from './components/dashboard/CodeforcesProfile'
+import LeetCodeContests from './components/dashboard/LeetCodeContests'
+import CodeChefContests from './components/dashboard/CodeChefContests'
+import AtCoderContests from './components/dashboard/AtCoderContests'
 
 import LeetCodeProfile from './components/dashboard/LeetCodeProfile'
+import AtCoderProfile from './components/dashboard/AtCoderProfile'
 import Resources from './components/dashboard/Resources'
+import StressInterview from './components/dashboard/StressInterview'
+import InterviewFeedback from './components/dashboard/InterviewFeedback'
+import RapidFire from './components/dashboard/RapidFire'
+import AptitudeQuiz from './components/dashboard/AptitudeQuiz'
 
 function App() {
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -159,10 +167,44 @@ function App() {
 
       try {
         if (authMode === 'signup') {
-          const { createUserWithEmailAndPassword } = await import('firebase/auth')
-          await createUserWithEmailAndPassword(auth, email, password)
-          // You could update displayName here if needed
-        } else {
+          const { createUserWithEmailAndPassword, updateProfile } = await import('firebase/auth')
+          const userCredential = await createUserWithEmailAndPassword(auth, email, password)
+
+          // Update profile with name
+          await updateProfile(userCredential.user, { displayName: name })
+
+          // Create basic profile in MongoDB
+          try {
+            await fetch('http://localhost:5000/api/profile', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                firebaseUid: userCredential.user.uid,
+                email: email,
+                fullName: name,
+                username: email.split('@')[0],
+              }),
+            })
+          } catch (profileErr) {
+            console.error('Failed to create initial profile:', profileErr)
+          }
+
+          // Send welcome email via backend
+          try {
+            await fetch('http://localhost:5000/api/auth/welcome-email', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ email, name }),
+            })
+          } catch (emailErr) {
+            console.error('Failed to send welcome email:', emailErr)
+          }
+        }
+        else {
           const { signInWithEmailAndPassword } = await import('firebase/auth')
           await signInWithEmailAndPassword(auth, email, password)
         }
@@ -305,11 +347,20 @@ function App() {
         <Route path="/dashboard" element={<DashboardLayout />}>
           <Route index element={<Dashboard />} />
           <Route path="codeforces" element={<CodeforcesContests />} />
+          <Route path="leetcode" element={<LeetCodeContests />} />
+          <Route path="codechef" element={<CodeChefContests />} />
+          <Route path="atcoder" element={<AtCoderContests />} />
           <Route path="codeforces-profile" element={<CodeforcesProfile />} />
           <Route path="leetcode-profile" element={<LeetCodeProfile />} />
+          <Route path="atcoder-profile" element={<AtCoderProfile />} />
           <Route path="resources/dsa" element={<Resources category="DSA" />} />
           <Route path="resources/interview" element={<Resources category="Interview" />} />
+          <Route path="resources/interview/stress" element={<StressInterview />} />
+          <Route path="resources/interview/rapid-fire" element={<RapidFire />} />
+          <Route path="resources/interview/stress/feedback" element={<InterviewFeedback />} />
           <Route path="resources/aptitude" element={<Resources category="Aptitude" />} />
+          <Route path="resources/aptitude/:domain" element={<AptitudeQuiz />} />
+          <Route path="resources/companies" element={<Resources category="Companies" />} />
         </Route>
       </Routes>
     </Router>
